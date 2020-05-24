@@ -1,0 +1,20 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t jtrolle/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true jtrolle/react-test npm test
+
+after_success:
+    - docker build -t jtrolle/multi-client ./client
+    - docker build -t jtrolle/multi-server ./server
+    - docker build -t jtrolle/multi-nginx ./nginx
+    - docker build -t jtrolle/multi-worker ./worker
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push jtrolle/multi-client
+    - docker push jtrolle/multi-server
+    - docker push jtrolle/multi-nginx
+    - docker push jtrolle/multi-worker
