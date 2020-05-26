@@ -18,3 +18,16 @@ after_success:
     - docker push jtrolle/multi-server
     - docker push jtrolle/multi-nginx
     - docker push jtrolle/multi-worker
+
+deploy:
+    edge: true
+    provider: elasticbeanstalk
+    region: "eu-west-3"
+    app: multi-docker
+    env: MultiDocker-env
+    bucket_name: elasticbeanstalk-eu-west-3-633344579048
+    bucket_path: docker-multi
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
